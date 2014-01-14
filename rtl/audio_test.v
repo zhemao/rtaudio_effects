@@ -1,13 +1,22 @@
 module audio_test (
-    input clk,
-    input sample_end,
-    output [15:0] audio_output
+    input  clk,
+    input  sample_end,
+    input  sample_req,
+    output [15:0] audio_output,
+    input  [15:0] audio_input,
+    input  [3:0]  control
 );
 
 reg [15:0] romdata [0:99];
 reg [6:0]  index = 7'd0;
+reg [15:0] last_sample;
+reg [15:0] dat;
 
-assign audio_output = romdata[index];
+assign audio_output = dat;
+
+parameter SILENT   = 4'b0000;
+parameter SINE     = 4'b0001;
+parameter FEEDBACK = 4'b0011;
 
 initial begin
     romdata[0] = 16'h0000;
@@ -114,10 +123,21 @@ end
 
 always @(posedge clk) begin
     if (sample_end) begin
-        if (index == 7'd99)
-            index <= 7'd00;
-        else
-            index <= index + 1'b1;
+        last_sample <= audio_input;
+    end
+
+    if (sample_req) begin
+        case (control)
+            SILENT : dat <= 16'd0;
+            SINE : begin
+                dat <= romdata[index];
+                if (index == 7'd99)
+                    index <= 7'd00;
+                else
+                    index <= index + 1'b1;
+            end
+            FEEDBACK : dat <= last_sample;
+        endcase
     end
 end
 

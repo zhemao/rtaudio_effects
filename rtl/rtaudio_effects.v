@@ -21,6 +21,7 @@ wire main_clk;
 wire audio_clk;
 
 wire [1:0] sample_end;
+wire [1:0] sample_req;
 wire [15:0] audio_output;
 wire [15:0] audio_input;
 
@@ -46,6 +47,7 @@ audio_codec ac (
     .clk (audio_clk),
     .reset (reset),
     .sample_end (sample_end),
+    .sample_req (sample_req),
     .audio_output (audio_output),
     .audio_input (audio_input),
     .channel_sel (2'b10),
@@ -60,7 +62,10 @@ audio_codec ac (
 audio_test at (
     .clk (audio_clk),
     .sample_end (sample_end[1]),
-    .audio_output (audio_output)
+    .sample_req (sample_req[1]),
+    .audio_output (audio_output),
+    .audio_input  (audio_input),
+    .control (SW)
 );
 
 endmodule
