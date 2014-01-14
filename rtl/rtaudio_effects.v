@@ -20,7 +20,8 @@ i2c_av_config av_config (
     .clk (CLOCK_50),
     .reset (1'b0),
     .i2c_sclk (AUD_I2C_SCLK),
-    .i2c_sdat (AUD_I2C_SDAT)
+    .i2c_sdat (AUD_I2C_SDAT),
+    .status (LED)
 );
 
 endmodule
