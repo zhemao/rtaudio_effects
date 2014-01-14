@@ -20,6 +20,8 @@ wire sclk_rising  = i2c_sclk && !last_sclk;
 assign i2c_sdat = sdat;
 assign i2c_data = shift_in;
 
+pullup (i2c_sdat);
+
 always @(posedge clk) begin
     case (state)
         3'b000: if (i2c_sclk && sdat_falling) begin

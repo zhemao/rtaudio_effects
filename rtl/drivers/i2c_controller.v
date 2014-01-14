@@ -21,7 +21,7 @@ assign i2c_sclk = (!clock_en) || sclk_divider[6];
 wire midlow = (sclk_divider == 7'h1f);
 
 reg sdat = 1'b1;
-assign i2c_sdat = sdat;
+assign i2c_sdat = (sdat) ? 1'bz : 1'b0;
 
 reg [2:0] acks;
 
@@ -31,7 +31,7 @@ assign done = (stage == 5'd29);
 always @(posedge clk) begin
     if (start) begin
         sclk_divider <= 7'd0;
-        stage <= 6'd0;
+        stage <= 5'd0;
         clock_en = 1'b0;
         sdat <= 1'b1;
         acks <= 3'b111;
@@ -67,7 +67,7 @@ always @(posedge clk) begin
                 5'd7:  sdat <= data[17];
                 5'd8:  sdat <= data[16];
                 // ack 1
-                5'd9:  sdat <= 1'bz;
+                5'd9:  sdat <= 1'b1;
                 // byte 2
                 5'd10: sdat <= data[15];
                 5'd11: sdat <= data[14];
@@ -78,7 +78,7 @@ always @(posedge clk) begin
                 5'd16: sdat <= data[9];
                 5'd17: sdat <= data[8];
                 // ack 2
-                5'd18: sdat <= 1'bz;
+                5'd18: sdat <= 1'b1;
                 // byte 3
                 5'd19: sdat <= data[7];
                 5'd20: sdat <= data[6];
@@ -89,7 +89,7 @@ always @(posedge clk) begin
                 5'd25: sdat <= data[1];
                 5'd26: sdat <= data[0];
                 // ack 3
-                5'd27: sdat <= 1'bz;
+                5'd27: sdat <= 1'b1;
                 // stop
                 5'd28: sdat <= 1'b0;
                 5'd29: sdat <= 1'b1;
