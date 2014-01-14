@@ -58,7 +58,7 @@ always @(posedge clk) begin
         case (control_state)
             2'b00: begin
                 i2c_start <= 1'b1;
-                i2c_data <= {8'h3f, lut_data};
+                i2c_data <= {8'h34, lut_data};
                 control_state <= 2'b01;
             end
             2'b01: begin
