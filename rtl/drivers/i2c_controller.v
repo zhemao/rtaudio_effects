@@ -45,9 +45,9 @@ always @(posedge clk) begin
 
             case (stage)
                 5'd0:  clock_en <= 1'b1;
-                5'd9:  acks[0] <= i2c_sclk;
-                5'd18: acks[1] <= i2c_sclk;
-                5'd27: acks[2] <= i2c_sclk;
+                5'd9:  acks[0] <= i2c_sdat;
+                5'd18: acks[1] <= i2c_sdat;
+                5'd27: acks[2] <= i2c_sdat;
                 5'd28: clock_en <= 1'b0;
             endcase
         end else
