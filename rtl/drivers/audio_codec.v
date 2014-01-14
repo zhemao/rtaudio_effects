@@ -2,6 +2,7 @@ module audio_codec (
     input  clk,
     input  reset,
     output [1:0]  sample_end,
+    output [1:0]  sample_req,
     input  [15:0] audio_output,
     output [15:0] audio_input,
     // 1 - left, 0 - right
@@ -41,6 +42,8 @@ end
 assign sample_end[1] = (lrck_divider == 8'h40);
 assign sample_end[0] = (lrck_divider == 8'hc0);
 assign audio_input = shift_in;
+assign sample_req[1] = (lrck_divider == 8'hff);
+assign sample_req[0] = (lrck_divider == 8'h7f);
 
 wire clr_lrck = (lrck_divider == 8'h7f);
 wire set_lrck = (lrck_divider == 8'hff);
