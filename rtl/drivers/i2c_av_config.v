@@ -5,7 +5,7 @@ module i2c_av_config (
     output i2c_sclk,
     inout  i2c_sdat,
 
-    output status
+    output [3:0] status
 );
 
 reg [23:0] i2c_data;
