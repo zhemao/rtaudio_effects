@@ -14,41 +14,38 @@ module audio_codec (
     output AUD_BCLK
 );
 
-wire lrck;
-wire bclk;
-
 reg [7:0] lrck_divider;
-reg [2:0] bclk_divider;
-
-assign lrck = !lrck_divider[7];
+reg [1:0] bclk_divider;
 
 reg [15:0] shift_out;
 reg [15:0] shift_temp;
 reg [15:0] shift_in;
 
+wire lrck = !lrck_divider[7];
+
 assign AUD_ADCLRCK = lrck;
 assign AUD_DACLRCK = lrck;
-assign AUD_BCLK = bclk_divider[2];
+assign AUD_BCLK = bclk_divider[1];
 assign AUD_DACDAT = shift_out[15];
 
 always @(posedge clk) begin
     if (reset) begin
         lrck_divider <= 8'hff;
-        bclk_divider <= 3'b111;
+        bclk_divider <= 2'b11;
     end else begin
         lrck_divider <= lrck_divider + 1'b1;
         bclk_divider <= bclk_divider + 1'b1;
     end
 end
 
-assign sample_end[1] = (lrck_divider == 8'h7e) ? 1'b1 : 1'b0;
-assign sample_end[0] = (lrck_divider == 8'hfe) ? 1'b1 : 1'b0;
+assign sample_end[1] = (lrck_divider == 8'h40);
+assign sample_end[0] = (lrck_divider == 8'hc0);
 assign audio_input = shift_in;
 
-wire clr_lrck = (lrck_divider == 8'h7f) ? 1'b1 : 1'b0;
-wire set_lrck = (lrck_divider == 8'hff) ? 1'b1 : 1'b0;
-wire set_bclk = (bclk_divider == 3'b100) ? 1'b1 : 1'b0;
-wire clr_bclk = (bclk_divider == 3'b111) ? 1'b1 : 1'b0;
+wire clr_lrck = (lrck_divider == 8'h7f);
+wire set_lrck = (lrck_divider == 8'hff);
+wire set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
+wire clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
 
 always @(posedge clk) begin
     if (reset) begin
