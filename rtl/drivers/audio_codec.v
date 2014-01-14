@@ -1,6 +1,6 @@
 module audio_codec (
     input  clk,
-    input  reset_n,
+    input  reset,
     output [1:0]  sample_end,
     input  [15:0] audio_output,
     output [15:0] audio_input,
@@ -32,7 +32,7 @@ assign AUD_BCLK = bclk_divider[2];
 assign AUD_DACDAT = shift_out[15];
 
 always @(posedge clk) begin
-    if (reset_n == 0) begin
+    if (reset) begin
         lrck_divider <= 8'hff;
         bclk_divider <= 3'b111;
     end else begin
@@ -51,7 +51,7 @@ wire set_bclk = (bclk_divider == 3'b100) ? 1'b1 : 1'b0;
 wire clr_bclk = (bclk_divider == 3'b111) ? 1'b1 : 1'b0;
 
 always @(posedge clk) begin
-    if (reset_n == 0) begin
+    if (reset) begin
         shift_out <= 16'h0;
         shift_in <= 16'h0;
         shift_in <= 16'h0;
