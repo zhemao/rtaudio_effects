@@ -1,5 +1,5 @@
 module rtaudio_effects (
-    input CLOCK_50,
+    input  OSC_50_B8A,
 
     inout  AUD_ADCLRCK,
     input  AUD_ADCDAT,
@@ -16,8 +16,10 @@ module rtaudio_effects (
     output [3:0] LED
 );
 
+wire main_clk = OSC_50_B8A;
+
 i2c_av_config av_config (
-    .clk (CLOCK_50),
+    .clk (main_clk),
     .reset (1'b0),
     .i2c_sclk (AUD_I2C_SCLK),
     .i2c_sdat (AUD_I2C_SDAT),
