@@ -42,8 +42,8 @@ end
 assign sample_end[1] = (lrck_divider == 8'h40);
 assign sample_end[0] = (lrck_divider == 8'hc0);
 assign audio_input = shift_in;
-assign sample_req[1] = (lrck_divider == 8'hff);
-assign sample_req[0] = (lrck_divider == 8'h7f);
+assign sample_req[1] = (lrck_divider == 8'hfe);
+assign sample_req[0] = (lrck_divider == 8'h7e);
 
 wire clr_lrck = (lrck_divider == 8'h7f);
 wire set_lrck = (lrck_divider == 8'hff);
