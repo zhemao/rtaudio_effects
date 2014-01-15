@@ -41,7 +41,7 @@ i2c_av_config av_config (
 );
 
 assign AUD_XCK = audio_clk;
-assign AUD_MUTE = SW[0];
+assign AUD_MUTE = (SW != 4'b0);
 
 audio_codec ac (
     .clk (audio_clk),

@@ -14,9 +14,8 @@ reg [15:0] dat;
 
 assign audio_output = dat;
 
-parameter SILENT   = 4'b0000;
-parameter SINE     = 4'b0001;
-parameter FEEDBACK = 4'b0011;
+parameter SINE     = 0;
+parameter FEEDBACK = 1;
 
 initial begin
     romdata[0] = 16'h0000;
@@ -127,17 +126,16 @@ always @(posedge clk) begin
     end
 
     if (sample_req) begin
-        case (control)
-            SILENT : dat <= 16'd0;
-            SINE : begin
-                dat <= romdata[index];
-                if (index == 7'd99)
-                    index <= 7'd00;
-                else
-                    index <= index + 1'b1;
-            end
-            FEEDBACK : dat <= last_sample;
-        endcase
+        if (control[FEEDBACK])
+            dat <= last_sample;
+        else if (control[SINE]) begin
+            dat <= romdata[index];
+            if (index == 7'd99)
+                index <= 7'd00;
+            else
+                index <= index + 1'b1;
+        end else
+            dat <= 16'd0;
     end
 end
 
