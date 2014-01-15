@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSXFC6D6F31C8
-set_global_assignment -name TOP_LEVEL_ENTITY rtaudio_effects
+set_global_assignment -name TOP_LEVEL_ENTITY sockit_top
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:48:47  JANUARY 13, 2014"
 set_global_assignment -name LAST_QUARTUS_VERSION 13.1
@@ -48,9 +48,6 @@ set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_location_assignment PIN_AC27 -to AUD_ADCDAT
 set_location_assignment PIN_AG30 -to AUD_ADCLRCK
 set_location_assignment PIN_AE7 -to AUD_BCLK
@@ -461,11 +458,14 @@ set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME i2c_controller_tb -sectio
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "80 us" -section_id i2c_controller_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE test/i2c_controller_tb.sv -section_id i2c_controller_tb
 set_global_assignment -name EDA_NATIVELINK_SIMULATION_SETUP_SCRIPT test/i2c_controller_sim.tcl -section_id eda_simulation
-set_global_assignment -name VERILOG_FILE rtl/audio_test.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE rtl/audio_effects.v
+set_global_assignment -name VERILOG_FILE rtl/sockit_top.v
 set_global_assignment -name VERILOG_FILE rtl/drivers/i2c_av_config.v
 set_global_assignment -name VERILOG_FILE rtl/drivers/i2c_controller.v
 set_global_assignment -name VERILOG_FILE rtl/drivers/audio_codec.v
-set_global_assignment -name VERILOG_FILE rtl/rtaudio_effects.v
 set_global_assignment -name QIP_FILE rtl/megafunctions/clock_pll.qip
 set_global_assignment -name SIP_FILE rtl/megafunctions/clock_pll.sip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

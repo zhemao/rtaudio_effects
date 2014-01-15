@@ -1,4 +1,4 @@
-module audio_test (
+module audio_effects (
     input  clk,
     input  sample_end,
     input  sample_req,

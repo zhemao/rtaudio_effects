@@ -1,4 +1,4 @@
-module rtaudio_effects (
+module sockit_top (
     input  OSC_50_B8A,
 
     inout  AUD_ADCLRCK,
@@ -59,7 +59,7 @@ audio_codec ac (
     .AUD_BCLK (AUD_BCLK)
 );
 
-audio_test at (
+audio_effects ae (
     .clk (audio_clk),
     .sample_end (sample_end[1]),
     .sample_req (sample_req[1]),
