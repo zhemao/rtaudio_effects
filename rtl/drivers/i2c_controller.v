@@ -17,16 +17,21 @@ reg [4:0] stage;
 reg [6:0] sclk_divider;
 reg clock_en = 1'b0;
 
+// don't toggle the clock unless we're sending data
+// clock will also be kept high when sending START and STOP symbols
 assign i2c_sclk = (!clock_en) || sclk_divider[6];
 wire midlow = (sclk_divider == 7'h1f);
 
 reg sdat = 1'b1;
+// rely on pull-up resistor to set SDAT high
 assign i2c_sdat = (sdat) ? 1'bz : 1'b0;
 
 reg [2:0] acks;
 
+parameter LAST_STAGE = 5'd29;
+
 assign ack = (acks == 3'b000);
-assign done = (stage == 5'd29);
+assign done = (stage == LAST_STAGE);
 
 always @(posedge clk) begin
     if (start) begin
@@ -40,14 +45,17 @@ always @(posedge clk) begin
         if (sclk_divider == 7'd127) begin
             sclk_divider <= 7'd0;
 
-            if (stage != 5'd29)
+            if (stage != LAST_STAGE)
                 stage <= stage + 1'b1;
 
             case (stage)
+                // after start
                 5'd0:  clock_en <= 1'b1;
+                // receive acks
                 5'd9:  acks[0] <= i2c_sdat;
                 5'd18: acks[1] <= i2c_sdat;
                 5'd27: acks[2] <= i2c_sdat;
+                // before stop
                 5'd28: clock_en <= 1'b0;
             endcase
         end else

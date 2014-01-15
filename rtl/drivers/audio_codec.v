@@ -47,7 +47,9 @@ assign sample_req[0] = (lrck_divider == 8'h7e);
 
 wire clr_lrck = (lrck_divider == 8'h7f);
 wire set_lrck = (lrck_divider == 8'hff);
+// high right after bclk is set
 wire set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
+// high right before bclk is cleared
 wire clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
 
 always @(posedge clk) begin
@@ -61,6 +63,7 @@ always @(posedge clk) begin
             shift_out <= audio_output;
             shift_temp <= audio_output;
             shift_in <= 16'h0;
+        // repeat the sample from the other channel if not
         end else shift_out <= shift_temp;
     end else if (set_bclk == 1) begin
         // only read in if channel is selected
