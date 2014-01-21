@@ -1,0 +1,11 @@
+set_global_assignment -entity "mult_accum" -library "mult_accum" -name IP_TOOL_NAME "altera_mult_add"
+set_global_assignment -entity "mult_accum" -library "mult_accum" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "mult_accum" -library "mult_accum" -name IP_TOOL_ENV "mwpim"
+set_global_assignment -library "mult_accum" -name MISC_FILE [file join $::quartus(qip_path) "mult_accum.cmp"]
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+
+set_global_assignment -library "mult_accum" -name VERILOG_FILE [file join $::quartus(qip_path) "mult_accum.v"]
+
+set_global_assignment -entity "altera_mult_add" -library "mult_accum" -name IP_TOOL_NAME "altera_mult_add"
+set_global_assignment -entity "altera_mult_add" -library "mult_accum" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "altera_mult_add" -library "mult_accum" -name IP_TOOL_ENV "mwpim"
