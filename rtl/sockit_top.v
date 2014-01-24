@@ -68,4 +68,9 @@ audio_effects ae (
     .control (SW)
 );
 
+fir_filter fir (
+    .clk (main_clk),
+    .reset (reset)
+);
+
 endmodule
