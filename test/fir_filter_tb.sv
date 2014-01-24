@@ -5,10 +5,10 @@ parameter expected = 7'd5;
 reg [15:0] audio_rom [0:3];
 reg [15:0] kernel_rom [0:3];
 
-wire [15:0] audio_addr;
+wire [6:0] audio_addr;
 reg  [15:0] audio_data;
 
-wire [15:0] kernel_addr;
+wire [6:0] kernel_addr;
 reg  [15:0] kernel_data;
 
 reg clk = 1'b1;
@@ -17,7 +17,7 @@ reg reset;
 wire [15:0] result;
 wire done;
 
-always clk = !clk;
+always #10000 clk = !clk;
 
 always @(posedge clk) begin
     audio_data <= audio_rom[audio_addr];
@@ -42,20 +42,21 @@ fir_filter fir (
 );
 
 initial begin
-    audio_rom[0] = 7'd2;
-    audio_rom[1] = 7'd3;
-    audio_rom[2] = 7'd6;
-    audio_rom[3] = 7'd1;
+    audio_rom[0] = 16'd2;
+    audio_rom[1] = 16'd3;
+    audio_rom[2] = 16'd6;
+    audio_rom[3] = 16'd1;
 
-    kernel_rom[0] = 7'd32767;
-    kernel_rom[0] = 7'd32764;
-    kernel_rom[0] = 7'd32745;
-    kernel_rom[0] = 7'd32677;
+    kernel_rom[0] = 16'd32767;
+    kernel_rom[1] = 16'd32764;
+    kernel_rom[2] = 16'd32745;
+    kernel_rom[3] = 16'd32677;
 
-    reset = 1'b1;
+    reset = 1'b0;
+    #20000 reset = 1'b1;
     #20000 reset = 1'b0;
 
-    #120000 assert (done);
+    #140000 assert (done);
     assert (result == expected);
 end
 
