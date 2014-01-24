@@ -15,42 +15,54 @@ module fir_filter (
     output done
 );
 
-wire [31:0] mac_result;
-reg mac_en_0 = 1'b0;
-reg mac_en_1 = 1'b0;
+reg acc_en_0 = 1'b0;
+reg acc_en_1 = 1'b0;
+reg acc_en_2 = 1'b0;
+reg [31:0] accum_value;
 
 reg [6:0] audio_index;
 reg [6:0] kernel_index;
 
-mult_accum mac (
-    .clock0 (clk),
-    .result (mac_result),
-    .dataa_0 (audio_data),
-    .datab_0 (kernel_data),
-    .ena0 (mac_en_1),
-    .aclr0 (reset)
+assign audio_addr = audio_index;
+assign kernel_addr = kernel_index;
+
+wire [31:0] mult_result;
+reg  [31:0] mult_reg;
+
+mult16 mult (
+    .dataa (audio_data),
+    .datab (kernel_data),
+    .result (mult_result)
 );
 
 always @(posedge clk) begin
-    mac_en_1 <= mac_en_0;
+    acc_en_2 <= acc_en_1;
+    acc_en_1 <= acc_en_0;
+    mult_reg <= mult_result;
 
     if (reset) begin
-        mac_en_0 <= 1'b1;
+        acc_en_0 <= 1'b1;
         audio_index <= start_addr;
         kernel_index <= 7'd0;
-    end else if (!mac_en_0) begin
-        if (audio_index == last_addr)
-            audio_index <= 7'd0;
-        else
-            audio_index <= audio_index + 1'b1;
-        if (kernel_index == last_addr)
-            mac_en_0 <= 1'b0;
-        else
-            kernel_index <= kernel_index + 1'b1;
+        accum_value <= 32'd0;
+    end else begin
+        if (acc_en_0) begin
+            if (audio_index == last_addr)
+                audio_index <= 7'd0;
+            else
+                audio_index <= audio_index + 1'b1;
+            if (kernel_index == last_addr)
+                acc_en_0 <= 1'b0;
+            else
+                kernel_index <= kernel_index + 1'b1;
+        end
+        if (acc_en_2) begin
+            accum_value <= accum_value + mult_reg;
+        end
     end
 end
 
-assign done = !mac_en_1;
-assign result = mac_result[31:16];
+assign done = !(acc_en_2 || acc_en_0);
+assign result = accum_value[31:16];
 
 endmodule
