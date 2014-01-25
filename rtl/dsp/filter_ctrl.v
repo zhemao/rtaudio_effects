@@ -12,13 +12,13 @@ module filter_ctrl (
 
 parameter LASTADDR = 7'd100;
 
-reg cur_end;
-reg last_end;
+reg cur_end = 1'b0;
+reg last_end = 1'b0;
 
-reg  rb_fifo_write;
+reg  rb_fifo_write = 1'b0;
 wire rb_cur_addr;
 
-reg  fir_reset;
+reg  fir_reset = 1'b0;
 wire [6:0]  fir_audio_addr;
 wire [15:0] fir_audio_data;
 wire [6:0]  fir_kernel_addr;
