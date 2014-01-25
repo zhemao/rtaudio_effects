@@ -52,3 +52,7 @@ Module.symvers
 .tmp_versions
 
 *.ver
+
+/software/highpass
+/software/*.raw
+/software/*.flac
