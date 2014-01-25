@@ -16,7 +16,7 @@ reg cur_end = 1'b0;
 reg last_end = 1'b0;
 
 reg  rb_fifo_write = 1'b0;
-wire rb_cur_addr;
+wire [6:0] rb_cur_addr;
 
 reg  fir_reset = 1'b0;
 wire [6:0]  fir_audio_addr;
@@ -61,13 +61,13 @@ kernel_rom krom (
     .q (fir_kernel_data)
 );
 
-always @(audio_clk) begin
+always @(posedge audio_clk) begin
     if (sample_req) begin
         audio_output <= fir_result;
     end
 end
 
-always @(main_clk) begin
+always @(posedge main_clk) begin
     cur_end <= sample_end;
     last_end <= cur_end;
 
