@@ -60,17 +60,13 @@ audio_codec ac (
 );
 
 audio_effects ae (
-    .clk (audio_clk),
+    .audio_clk (audio_clk),
+    .main_clk (main_clk),
     .sample_end (sample_end[1]),
     .sample_req (sample_req[1]),
     .audio_output (audio_output),
     .audio_input  (audio_input),
     .control (SW)
-);
-
-fir_filter fir (
-    .clk (main_clk),
-    .reset (reset)
 );
 
 endmodule

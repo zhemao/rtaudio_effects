@@ -1,21 +1,30 @@
 module audio_effects (
-    input  clk,
+    input  audio_clk,
+    input  main_clk,
+    input  reset,
+
     input  sample_end,
     input  sample_req,
+
     output [15:0] audio_output,
     input  [15:0] audio_input,
+
     input  [3:0]  control
 );
 
-reg [15:0] romdata [0:99];
-reg [6:0]  index = 7'd0;
-reg [15:0] last_sample;
-reg [15:0] dat;
+reg  [15:0] romdata [0:99];
+reg  [6:0]  index = 7'd0;
+reg  [15:0] last_sample;
+reg  [15:0] dat;
+wire [15:0] filter_output;
 
 assign audio_output = dat;
 
 parameter SINE     = 0;
 parameter FEEDBACK = 1;
+parameter FILTER   = 2;
+
+parameter SINE_LAST = 7'd99;
 
 initial begin
     romdata[0] = 16'h0000;
@@ -120,23 +129,40 @@ initial begin
     romdata[99] = 16'hf629;
 end
 
-always @(posedge clk) begin
+always @(*) begin
+    if (control[FEEDBACK])
+        dat <= last_sample;
+    else if (control[SINE])
+        dat <= romdata[index];
+    else if (control[FILTER])
+        dat <= filter_output;
+    else
+        dat <= 16'd0;
+end
+
+always @(posedge audio_clk) begin
     if (sample_end) begin
         last_sample <= audio_input;
     end
 
     if (sample_req) begin
-        if (control[FEEDBACK])
-            dat <= last_sample;
-        else if (control[SINE]) begin
-            dat <= romdata[index];
-            if (index == 7'd99)
-                index <= 7'd00;
-            else
-                index <= index + 1'b1;
-        end else
-            dat <= 16'd0;
+        if (index == SINE_LAST)
+            index <= 7'd00;
+        else
+            index <= index + 1'b1;
     end
 end
+
+filter_ctrl fc (
+    .audio_clk (audio_clk),
+    .main_clk  (main_clk),
+    .reset     (reset),
+
+    .sample_end (sample_end),
+    .sample_req (sample_req),
+
+    .audio_input (audio_input),
+    .audio_output (filter_output)
+);
 
 endmodule
