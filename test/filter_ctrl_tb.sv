@@ -17,6 +17,8 @@ reg [7:0] i;
 reg [6:0]  romaddr;
 reg [15:0] romdata [0:99];
 
+wire filter_finish;
+
 filter_ctrl fc (
     .audio_clk (audio_clk),
     .main_clk (main_clk),
@@ -26,7 +28,8 @@ filter_ctrl fc (
     .sample_req (sample_req),
 
     .audio_input (audio_input),
-    .audio_output (audio_output)
+    .audio_output (audio_output),
+    .finish (filter_finish)
 );
 
 initial begin
