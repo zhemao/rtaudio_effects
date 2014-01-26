@@ -17,6 +17,7 @@ reg  [6:0]  index = 7'd0;
 reg  [15:0] last_sample;
 reg  [15:0] dat;
 wire [15:0] filter_output;
+wire filter_finish;
 
 assign audio_output = dat;
 
@@ -25,6 +26,22 @@ parameter FEEDBACK = 1;
 parameter FILTER   = 2;
 
 parameter SINE_LAST = 7'd99;
+
+reg  fifo_read;
+reg  fifo_write;
+wire fifo_empty;
+wire fifo_full;
+wire [15:0] fifo_output;
+
+audio_fifo fifo (
+    .clock (audio_clk),
+    .data  (filter_output),
+    .rdreq (fifo_read),
+    .wrreq (fifo_write),
+    .empty (fifo_empty),
+    .full  (fifo_full),
+    .q     (fifo_output)
+);
 
 initial begin
     romdata[0] = 16'h0000;
@@ -135,7 +152,7 @@ always @(*) begin
     else if (control[SINE])
         dat <= romdata[index];
     else if (control[FILTER])
-        dat <= filter_output;
+        dat <= fifo_output;
     else
         dat <= 16'd0;
 end
@@ -150,7 +167,15 @@ always @(posedge audio_clk) begin
             index <= 7'd00;
         else
             index <= index + 1'b1;
-    end
+        if (fifo_full)
+            fifo_read <= 1'b1;
+    end else
+        fifo_read <= 1'b0;
+
+    if (filter_finish && !fifo_full)
+        fifo_write <= 1'b1;
+    else
+        fifo_write <= 1'b0;
 end
 
 filter_ctrl fc (
@@ -162,7 +187,8 @@ filter_ctrl fc (
     .sample_req (sample_req),
 
     .audio_input (audio_input),
-    .audio_output (filter_output)
+    .audio_output (filter_output),
+    .finish (filter_finish)
 );
 
 endmodule

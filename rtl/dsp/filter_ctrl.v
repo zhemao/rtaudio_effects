@@ -7,7 +7,9 @@ module filter_ctrl (
     input sample_req,
 
     input      [15:0] audio_input,
-    output reg [15:0] audio_output
+    output reg [15:0] audio_output,
+
+    output finish
 );
 
 parameter LASTADDR = 7'd100;
@@ -24,6 +26,10 @@ wire [15:0] fir_audio_data;
 wire [6:0]  fir_kernel_addr;
 wire [15:0] fir_kernel_data;
 wire [15:0] fir_result;
+wire fir_done;
+
+reg cur_done;
+reg last_done;
 
 ring_buffer rb (
     .clk (main_clk),
@@ -52,7 +58,8 @@ fir_filter fir (
     .kernel_addr (fir_kernel_addr),
     .kernel_data (fir_kernel_data),
 
-    .result (fir_result)
+    .result (fir_result),
+    .done (fir_done)
 );
 
 kernel_rom krom (
@@ -65,7 +72,12 @@ always @(posedge audio_clk) begin
     if (sample_req) begin
         audio_output <= fir_result;
     end
+
+    cur_done <= fir_done;
+    last_done <= cur_done;
 end
+
+assign finish = cur_done && !last_done;
 
 always @(posedge main_clk) begin
     cur_end <= sample_end;
