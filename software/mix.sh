@@ -1,0 +1,7 @@
+FILE1=$1
+FILE2=$2
+OUTPUT=$3
+
+FLAGS="-r 44100 -b 16 -c 1 -e signed"
+
+sox -m $FLAGS "$FILE1" $FLAGS "$FILE2" $FLAGS "$OUTPUT"
