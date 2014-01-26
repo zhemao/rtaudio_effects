@@ -75,3 +75,29 @@ void rt_filter(FILE *inf, FILE *outf, int16_t *kernel, int kern_size)
 		fwrite(&sum, 2, 1, outf);
 	}
 }
+
+static inline int little_endian(void)
+{
+	int16_t word = 1;
+	uint8_t *addr = (uint8_t *) &word;
+
+	// little-endian means byte 0 is LSB
+	return addr[0] == 1;
+}
+
+void swap_endian_if_needed(int16_t *kernel, int size)
+{
+	int i;
+	uint8_t *bytes = (uint8_t *) kernel;
+	uint8_t temp;
+
+	// don't need to do anything if the system is big-endian
+	if (!little_endian())
+		return;
+
+	for (i = 0; i < size; i++) {
+		temp = bytes[2 * i];
+		bytes[2 * i] = bytes[2 * i + 1];
+		bytes[2 * i + 1] = temp;
+	}
+}

@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
 	}
 	fclose(f);
 
+	swap_endian_if_needed(kernel, kern_size);
+
 	if (argc < 3)
 		f = stdin;
 	else {

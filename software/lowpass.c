@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 
 	lowpass(crit_freq, kern_width, SAMP_RATE, f_kernel);
 	to_fixed_point(f_kernel, i_kernel, kern_size);
+	swap_endian_if_needed(i_kernel, kern_size);
 
 	fwrite(i_kernel, sizeof(int16_t), kern_size, stdout);
 
