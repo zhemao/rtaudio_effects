@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	f_kernel = calloc(kern_size, sizeof(float));
 	i_kernel = calloc(kern_size, sizeof(int16_t));
 
-	highpass(crit_freq, kern_width, SAMP_RATE, f_kernel);
+	lowpass(crit_freq, kern_width, SAMP_RATE, f_kernel);
 	to_fixed_point(f_kernel, i_kernel, kern_size);
 
 	fwrite(i_kernel, sizeof(int16_t), kern_size, stdout);

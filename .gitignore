@@ -54,5 +54,8 @@ Module.symvers
 *.ver
 
 /software/highpass
+/software/lowpass
+/software/apply_filter
 /software/*.raw
 /software/*.flac
+/software/*.dat
