@@ -59,3 +59,5 @@ Module.symvers
 /software/*.raw
 /software/*.flac
 /software/*.dat
+/software/*.bin
+/software/*.hex
