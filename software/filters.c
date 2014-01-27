@@ -10,18 +10,23 @@ void lowpass(float critFreq, int W, int sampRate, float *result)
 	int M = 2 * W;
 
 	for (i = 0; i <= M; i++) {
+		// t is symmetric around the Y axis
 		t = (i - W) / (float) sampRate;
 		if (t == 0) {
+			// avoid discontinuity at t = 0
 			result[i] = 1.0f;
 			sum += 1.0f;
 		} else {
+			// sinc function
 			h = sin(2 * M_PI * critFreq * t) / (2 * M_PI * critFreq * t);
+			// hamming window
 			h *= (0.54 - 0.46 * cos(2 * M_PI * i / M));
 			result[i] = h;
 			sum += h;
 		}
 	}
 
+	// normalize so that DC gain is 1
 	for (i = 0; i <= M; i++) {
 		result[i] /= sum;
 	}
